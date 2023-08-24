@@ -15,6 +15,7 @@ import praktikum.helper.DriverHelper;
 import praktikum.pages.MainPage;
 import praktikum.pages.ScooterPage;
 
+
 @RunWith(Parameterized.class)
 public class OrderScooter {
     //Подключить правило наследования для запуска браузера
@@ -22,6 +23,8 @@ public class OrderScooter {
     public DriverHelper driverHelper = new DriverHelper();
 
     //Объявление переменных для тестовых данных
+
+    private final String buttonOrder;
     private final String name;
     private final String lastName;
     private final String address;
@@ -33,7 +36,8 @@ public class OrderScooter {
     private final String comment;
 
     //Конструктор для данных
-    public OrderScooter(String name, String lastName, String address, int metroStation, String phone, String date, String period, String colour, String comment) {
+    public OrderScooter(String buttonOrder, String name, String lastName, String address, int metroStation, String phone, String date, String period, String colour, String comment) {
+        this.buttonOrder = buttonOrder;
         this.name = name;
         this.lastName = lastName;
         this.address = address;
@@ -49,35 +53,24 @@ public class OrderScooter {
     @Parameterized.Parameters
     public static Object[][] getTestData() {
         return new Object[][]{
-                {"Иван", "Иванов", "Иваново", 17, "90313565456", "01.01.2024", "двое суток", "black", "Привезти сегодня"},
-                {"Петр", "Петров", "Санкт-Петербург", 18, "89313594567", "01.01.2024", "пятеро суток", "grey", "Для детей"},
+                {"header", "Иван", "Иванов", "Иваново", 17, "90313565456", "01.01.2024", "двое суток", "black", "Привезти сегодня"},
+                {"middle", "Петр", "Петров", "Санкт-Петербург", 18, "89313594567", "01.01.2024", "пятеро суток", "grey", "Для детей"},
         };
     }
 
     @Test
-    //Нажать кнопку "Заказать"
-    public void pressOrder() throws InterruptedException {
+    public void pressOrder() {
         ScooterPage scooterPage = new ScooterPage(driverHelper.getDriver());
         MainPage mainPage = new MainPage(driverHelper.getDriver());
 
-        //Заказать вверху страницы
-        //Открыть страницу
-        mainPage.open();
-
+        mainPage.open(); //Открыть страницу
         scooterPage.clickAcceptCookie(); //Нажать куки
 
-        scooterPage.clickButtonOrderHeader(); //Нажать кнопку "Заказать" вверху страницы
+
+        scooterPage.clickOrderButton(this.buttonOrder); //Нажать кнопку "Заказать"
         scooterPage.waitThatOpenNewPage(); //Убедиться, что открылась страница заказа
 
-        //Заказать внизу страницы
-        //Открыть страницу
-        mainPage.open();
-
-        scooterPage.scrollToOrderMiddleButton(); //Прокрутить страницу
-        scooterPage.clickButtonOrderBottom(); //Нажать кнопку "Заказать" внизу страницы
-        scooterPage.waitThatOpenNewPage(); //Убедиться, что открылась страница заказа
-
-        //Заполнить формы заказа
+        // Заполнить формы заказа
         // 1 страница "Для кого самокат"
 
         scooterPage.fillName(this.name); //Заполнить Имя
@@ -106,3 +99,4 @@ public class OrderScooter {
         scooterPage.waitDisplayOrder(); //Подождать отображение заказа
     }
 }
+

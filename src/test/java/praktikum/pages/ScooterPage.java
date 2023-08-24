@@ -1,9 +1,11 @@
 package praktikum.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import praktikum.helper.ActionHelper;
 import praktikum.helper.EnvConfig;
+import java.util.Objects;
 
 public class ScooterPage {
     private final WebDriver driver;
@@ -60,8 +62,21 @@ public class ScooterPage {
     /**
      * Оформление заказа
      */
+
+    public void clickOrderButton(String buttonOrder) {
+        if (Objects.equals(buttonOrder, "header")) {
+            this.clickButtonOrderHeader(); //Нажать кнопку "Заказать" вверху страницы
+        } else {
+            this.scrollToOrderMiddleButton(); //Прокрутить страницу
+            this.clickButtonOrderBottom(); //Нажать кнопку "Заказать" внизу страницы
+        }
+    }
+
     public void clickAcceptCookie() {
-        driver.findElement(cookieAcceptButton).click();
+        try {
+            driver.findElement(cookieAcceptButton).click();
+        } catch (NoSuchElementException e) {
+        }
     }
 
     public void clickButtonOrderHeader() {
