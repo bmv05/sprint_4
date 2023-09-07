@@ -10,8 +10,7 @@ import org.openqa.selenium.firefox.GeckoDriverService;
 import java.io.File;
 import java.time.Duration;
 
-import static praktikum.helper.EnvConfig.WEB_DRIVER_CHROME;
-import static praktikum.helper.EnvConfig.WEB_DRIVER_FIREFOX;
+import static praktikum.helper.EnvConfig.*;
 
 public class DriverHelper extends ExternalResource {
 
@@ -30,18 +29,25 @@ public class DriverHelper extends ExternalResource {
     private void setUpChrome() {
         System.setProperty("webdriver.http.factory", "jdk-http-client");
         ChromeDriverService service = new ChromeDriverService.Builder()
+                .withLogOutput(System.out)
                 .usingDriverExecutable(new File(WEB_DRIVER_CHROME))
                 .build();
-        driver = new ChromeDriver(service);
+        ChromeOptions options = new ChromeOptions()
+                .setBinary(WEB_DRIVER_CHROME_BIN);
+        driver = new ChromeDriver(service, options);
     }
 
-    public void setUpFirefox() {
-        System.setProperty("webdriver.http.factory", "jdk-http-client");
-        var service = new GeckoDriverService.Builder()
-                .usingDriverExecutable(new File(WEB_DRIVER_FIREFOX))
-                .build();
-        driver = new FirefoxDriver(service);
-    }
+        public void setUpFirefox () {
+            System.setProperty("webdriver.http.factory", "jdk-http-client");
+            var service = new GeckoDriverService.Builder()
+                    .withLogOutput(System.out)
+                    .usingDriverExecutable(new File(WEB_DRIVER_FIREFOX))
+                    .build();
+            FirefoxOptions options = new FirefoxOptions()
+                    .setBinary(WEB_DRIVER_FIREFOX_BIN);
+
+            driver = new FirefoxDriver(service, options);
+        }
 
     @Override
     protected void after() {
